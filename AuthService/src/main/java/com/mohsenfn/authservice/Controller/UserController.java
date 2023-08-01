@@ -1,13 +1,22 @@
 package com.mohsenfn.authservice.Controller;
 
 import com.mohsenfn.authservice.DTO.UserRequest;
+import com.mohsenfn.authservice.Entity.JwtResponse;
 import com.mohsenfn.authservice.Entity.User;
+import com.mohsenfn.authservice.Service.SessionService;
 import com.mohsenfn.authservice.Service.UserIService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
+
 
 @RestController
 @RequestMapping("auth")
@@ -16,12 +25,14 @@ public class UserController {
     UserIService uis;
     @Autowired
     AuthenticationManager authenticationManager;
+    @Autowired
+    SessionService ss;
     @PostMapping("/register")
     public User createAccount(@RequestBody User user) {
         return uis.createAccount(user);
     }
     @PostMapping("/token")
-    public String generateToken(@RequestBody UserRequest user) {
+    public JwtResponse generateToken(@RequestBody UserRequest user) {
         Authentication a= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
         if(a.isAuthenticated()) {
             return uis.generateToken(user.getUsername());
@@ -36,8 +47,29 @@ public class UserController {
         uis.validateToken(token);
         return "validate token";
     }
+
     @GetMapping("/getrole")
-    public String getRolefromToken(String token) {
+    public String getRolefromToken(@RequestParam String token) {
         return uis.getRolefromToken(token);
+    }
+    @GetMapping("/GetUser")
+    public String getCurrentUser(@AuthenticationPrincipal Authentication authentication) {
+        // The authentication object holds information about the currently authenticated user
+        if (authentication != null) {
+            String username = authentication.getName();
+            return "Currently authenticated user: " + username;
+        } else {
+            return "No user currently authenticated";
+        }
+    }
+    @GetMapping("/getSession")
+    public User getuserbutoken(@NonNull HttpServletRequest request){
+        return uis.getuserbutoken(request);
+    }
+    @PostMapping("/manualLogout")
+    public String customLogut(HttpServletRequest request) throws ServletException
+    {
+        request.logout();
+        return "redirect:/";
     }
 }

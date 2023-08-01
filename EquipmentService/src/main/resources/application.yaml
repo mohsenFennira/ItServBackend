@@ -1,0 +1,33 @@
+### DATABASE ###
+server:
+  port: 8085
+##spring.mvc.pathmatch.matching-strategy=ant_path_matcher#
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/Equipmentitserv
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    hibernate:
+      ddl-auto: update
+  application:
+    name: EQUIPMENT-SERVICE
+  cloud:
+    config:
+      enabled: false
+    # config:
+    #  import: configserver:http://localhost:9296
+    # cloud:
+    #  config:
+    #   username: mohsenFennira # This is required only if your config server use authentication
+    #  password: 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
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}

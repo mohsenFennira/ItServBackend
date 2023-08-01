@@ -22,6 +22,7 @@ public class User implements Serializable {
     private String password;
     private String firstName;
     private String lastName;
+    @Column(unique = true, nullable = false)
     private String username;
     private Boolean validate;
     private Instant dateCreation;

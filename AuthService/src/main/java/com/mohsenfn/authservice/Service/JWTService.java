@@ -1,7 +1,10 @@
 package com.mohsenfn.authservice.Service;
 
 import com.mohsenfn.authservice.Entity.RoleType;
+import com.mohsenfn.authservice.Entity.User;
+import com.mohsenfn.authservice.Repository.UserRepository;
 import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +25,8 @@ import java.util.function.Function;
 public class JWTService {
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 
-
+ @Autowired
+    UserRepository ur;
     public void validateToken(final String token) {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
     }
@@ -30,7 +34,8 @@ public class JWTService {
 
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", RoleType.values());
+        User user=ur.findByUsername(userName).get();
+        claims.put("role", user.getRoleType());
         return createToken(claims, userName);
     }
 
@@ -39,9 +44,9 @@ public class JWTService {
         return claimsResolver.apply(claims);
     }
     public String getRoleFromToken(String token) {
-        List<String> roles = getClaimFromToken(token, claims -> claims.get("role", List.class));
+        String roles = getClaimFromToken(token, claims -> claims.get("role", List.class)).toString();
         if (roles != null && !roles.isEmpty()) {
-            return roles.get(0); // Return the first role in the list
+            return roles; // Return the first role in the list
         } else {
             return null; // Or handle the absence of roles differently based on your use case
         }
@@ -55,6 +60,22 @@ public class JWTService {
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
