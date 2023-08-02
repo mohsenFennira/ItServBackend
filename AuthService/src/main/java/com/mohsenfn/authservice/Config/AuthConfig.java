@@ -1,4 +1,5 @@
 package com.mohsenfn.authservice.Config;
+import com.mohsenfn.authservice.Entity.RoleType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +28,8 @@ public class AuthConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers("/auth/register", "/auth/token", "/auth/validate","/auth/getrole","/auth/GetUser","/auth/getSession").permitAll()
+                                .requestMatchers("/auth/register", "/auth/token", "/auth/validate","/auth/getrole","/auth/GetUser","/auth/getSession","/auth/getAllAccount").permitAll()
+
                 )
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

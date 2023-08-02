@@ -5,6 +5,8 @@ import com.mohsenfn.equipment.Service.EquipmentIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/Equipment")
 @RestController
 public class EquipmentController {
@@ -23,5 +25,10 @@ public class EquipmentController {
     @DeleteMapping("Delete")
     public void DeleteEquipment(@RequestParam long idEquipment) {
         eis.DeleteEquipment(idEquipment);
+    }
+
+    @GetMapping("GetEquipments")
+    public List<Equipment> getEquipments() {
+        return eis.getEquipments();
     }
 }

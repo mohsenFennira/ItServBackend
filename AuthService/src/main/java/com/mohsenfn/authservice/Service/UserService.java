@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
+
 @Service
 public class UserService implements UserIService {
     @Autowired
@@ -25,7 +27,6 @@ public class UserService implements UserIService {
     public User createAccount(User user) {
         user.setDateCreation(Instant.now());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         return ur.save(user);
     }
    public User getuserbutoken(@NonNull HttpServletRequest request){
@@ -37,6 +38,13 @@ public class UserService implements UserIService {
         User user=  ur.findByUsername(Username).get();
         return user;
     }
+
+    @Override
+    public List<User> getAllAccount() {
+        List<User> users= (List<User>) ur.findAll();
+        return users;
+    }
+
     @Override
     public JwtResponse generateToken(String username) {
         String token=jwtService.generateToken(username);

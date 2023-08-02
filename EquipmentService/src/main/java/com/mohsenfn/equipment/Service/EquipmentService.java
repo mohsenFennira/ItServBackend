@@ -5,6 +5,8 @@ import com.mohsenfn.equipment.Repository.EquipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EquipmentService implements EquipmentIService{
     @Autowired
@@ -28,5 +30,11 @@ public class EquipmentService implements EquipmentIService{
     public void ReduceQuantity(long quantity, long idEquipment) {
         Equipment equipment=er.findById(idEquipment).get();
         equipment.setQuantity(quantity);
+    }
+
+    @Override
+    public List<Equipment> getEquipments() {
+        List<Equipment> ListEquipments= (List<Equipment>) er.findAll();
+        return ListEquipments;
     }
 }
