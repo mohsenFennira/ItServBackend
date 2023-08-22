@@ -26,6 +26,13 @@ spring:
             lb://AUTH-SERVICE
           predicates:
             - Path=/auth/**
+        - id: RESERVATION-SERVICE
+          uri:
+            lb://RESERVATION-SERVICE
+          predicates:
+            - Path=/Reservation/**
+          filters:
+            - AutenticationFilter
 eureka:
   instance:
     prefer-ip-address: true

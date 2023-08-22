@@ -12,7 +12,7 @@ import java.util.List;
 public class EquipmentController {
     @Autowired
     EquipmentIService eis;
-    @PostMapping("add")
+    @PostMapping("/add")
     public Equipment AddEquipment(@RequestBody Equipment equipment) {
         return eis.AddEquipment(equipment);
     }

@@ -3,6 +3,8 @@ package com.mohsenfn.authservice.Controller;
 import com.mohsenfn.authservice.DTO.UserRequest;
 import com.mohsenfn.authservice.Entity.JwtResponse;
 import com.mohsenfn.authservice.Entity.User;
+import com.mohsenfn.authservice.Repository.UserRepository;
+import com.mohsenfn.authservice.Service.JWTService;
 import com.mohsenfn.authservice.Service.SessionService;
 import com.mohsenfn.authservice.Service.UserIService;
 import jakarta.servlet.ServletException;
@@ -68,6 +70,16 @@ public class UserController {
     @GetMapping("/getSession")
     public User getuserbutoken(@NonNull HttpServletRequest request){
         return uis.getuserbutoken(request);
+    }
+    @Autowired
+    JWTService jwtService;
+    @Autowired
+    UserRepository ur;
+    @GetMapping("/getSessionByToken")
+    public User getuserbyoken(@RequestParam("token") String token){
+        String Username=jwtService.extractUsername(token);
+        User user=  ur.findByUsername(Username).get();
+        return user;
     }
     @PostMapping("/manualLogout")
     public String customLogut(HttpServletRequest request) throws ServletException

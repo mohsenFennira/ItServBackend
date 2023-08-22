@@ -28,7 +28,7 @@ public class AuthConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers("/auth/register", "/auth/token", "/auth/validate","/auth/getrole","/auth/GetUser","/auth/getSession","/auth/getAllAccount").permitAll()
+                                .requestMatchers("/auth/register", "/auth/token", "/auth/validate","/auth/getrole","/auth/GetUser","/auth/getSession","/auth/getAllAccount","/auth/getSessionByToken").permitAll()
 
                 )
                 .sessionManagement((session) -> session
